@@ -1,0 +1,47 @@
+version: '3.6'
+services:
+  static:
+    build:
+      context: ./front-end
+      dockerfile: ../static/Dockerfile
+    image: rohit04apr/tw-static:latest
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./build
+      dockerfile: ../front-end/Dockerfile
+    image: rohit04apr/tw-frontend
+    ports:
+      - "80:8001"
+    restart: unless-stopped
+    environment:
+      - APP_PORT=8001
+      - STATIC_URL=http://localhost:8000
+      - QUOTE_SERVICE_URL=http://localhost:8002
+      - NEWSFEED_SERVICE_URL=http://localhost:8003
+      - NEWSFEED_SERVICE_TOKEN=T1&eWbYXNWG1w1^YGKDPxAWJ@^et^&kX
+
+  quotes:
+    build:
+      context: ./build
+      dockerfile: ../quotes/Dockerfile
+    image: rohit04apr/tw-quotes
+    ports:
+      - "8002:8002"
+    restart: unless-stopped
+    environment:
+      - APP_PORT=8002
+
+  newsfeed:
+    build:
+      context: ./build
+      dockerfile: ../newsfeed/Dockerfile
+    image: rohit04apr/tw-newsfeed
+    ports:
+      - "8003:8003"
+    restart: unless-stopped
+    environment:
+      - APP_PORT=8003
