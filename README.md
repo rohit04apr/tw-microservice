@@ -55,7 +55,7 @@ It is used to host a Clojure application on AWS on a containerised platform. It 
 - Run `cd code-build`
 - Replace `{dockerhub-username}` to your docker hub user name in docker-compose.yaml file.
 - Run `make image` -> This will build the code and create the image locally
-- Rush all the four images to the docker hub. like `docker push {dockerhub-username}/tw-frontend:v2`.
+- Push all the four images to the docker hub. like `docker push {dockerhub-username}/tw-frontend:v2`.
 - Run `cd ..`
 - Set the required variables for terraform mentioned in the Input section.
 - Run `terraform init`
@@ -63,4 +63,10 @@ It is used to host a Clojure application on AWS on a containerised platform. It 
 - Run `terraform apply`
 - Once all resources are created successfully and ECS tasks started running. You can check the application using the ALB endpoint.
 
-![output](documentation/output.png)
+    ![output](documentation/output.png)
+
+## Recommendation on the future work
+- The build part should be done via any CI tools. So that code is built and the image is pushed to the registry from some server instead of a local machine.
+- CI pipeline should be running on code commit using webhooks.
+- Terraform different workspaces should be created using same code for eg Dev, QA, Production. So that all the environments can be managed separately.
+- Images should be tagged properly, so that new rollouts and rollbacks can be done easily per environments
