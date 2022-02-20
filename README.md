@@ -1,12 +1,10 @@
-# terraform-app-deploy
+# tw-microservice-deploy
 
 ## Architecture Diagram
 
 ![architecture-diagram](documentation/diagram.png)
 
-
 ---
-
 
 ## Usage
 
@@ -54,15 +52,15 @@ It is used to host a Clojure application on AWS on a containerised platform. It 
 
 
 ## Steps to build and deploy the application
-- run `cd code-build`
-- replace `{dockerhub-username}` to your docker hub user name in docker-compose.yaml file.
-- run `make image` -> This will build the code and create the image locally
-- push all the four images to the docker hub. like `docker push {dockerhub-username}/tw-frontend:v2`.
-- run `cd ..`
-- set the required variables for terraform mentioned in the Input section.
-- run `terraform init`
-- run `terraform plan`
-- run `terraform apply`
+- Run `cd code-build`
+- Replace `{dockerhub-username}` to your docker hub user name in docker-compose.yaml file.
+- Run `make image` -> This will build the code and create the image locally
+- Rush all the four images to the docker hub. like `docker push {dockerhub-username}/tw-frontend:v2`.
+- Run `cd ..`
+- Set the required variables for terraform mentioned in the Input section.
+- Run `terraform init`
+- Run `terraform plan`
+- Run `terraform apply`
 - Once all resources are created successfully and ECS tasks started running. You can check the application using the ALB endpoint.
 
 ![output](documentation/output.png)

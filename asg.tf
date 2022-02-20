@@ -62,10 +62,10 @@ resource "aws_launch_configuration" "lc" {
   lifecycle {
     create_before_destroy = true
   }
-  iam_instance_profile        = aws_iam_instance_profile.ecs_service_role.name
+  iam_instance_profile = aws_iam_instance_profile.ecs_service_role.name
   # key_name                    = var.key_name
-  security_groups             = [aws_security_group.ec2_sg.id]
-  user_data                   = <<EOF
+  security_groups = [aws_security_group.ec2_sg.id]
+  user_data       = <<EOF
 #! /bin/bash
 sudo apt-get update
 sudo echo "ECS_CLUSTER=${var.cluster_name}" >> /etc/ecs/ecs.config
