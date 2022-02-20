@@ -1,0 +1,63 @@
+[
+    {
+        "name": "tw-frontend",
+        "image": "${frontend_image}",
+        "essential": true,
+        "environment": [
+          { "name": "APP_PORT", "value": "${frontend_port}" },
+          { "name": "STATIC_URL", "value": "http://localhost:${frontend_port}" },
+          { "name": "QUOTE_SERVICE_URL", "value": "http://localhost:${quotes_port}" },
+          { "name": "NEWSFEED_SERVICE_URL", "value": "http://localhost:${newsfeed_port}" },
+          { "name": "NEWSFEED_SERVICE_TOKEN", "value": "T1&eWbYXNWG1w1^YGKDPxAWJ@^et^&kX" }
+        ],
+        "portMappings": [
+          {
+            "hostPort": ${frontend_port},
+            "protocol": "tcp",
+            "containerPort": ${frontend_port}
+          }
+        ]
+      },
+    {
+      "name": "tw-static",
+      "image": "${static_image}",
+      "essential": true,
+      "portMappings": [
+        {
+          "hostPort": ${static_port},
+          "protocol": "tcp",
+          "containerPort": ${static_port}
+        }
+      ]
+    },
+    {
+        "name": "tw-quotes",
+        "image": "${quotes_image}",
+        "essential": true,
+        "environment": [
+          { "name": "APP_PORT", "value": "${quotes_port}" }
+        ],
+        "portMappings": [
+          {
+            "hostPort": ${quotes_port},
+            "protocol": "tcp",
+            "containerPort": ${quotes_port}
+          }
+        ]
+      },
+      {
+        "name": "tw-newsfeed",
+        "image": "${newsfeed_image}",
+        "essential": true,
+        "environment": [
+          { "name": "APP_PORT", "value": "${newsfeed_port}" }
+        ],
+        "portMappings": [
+          {
+            "hostPort": ${newsfeed_port},
+            "protocol": "tcp",
+            "containerPort": ${newsfeed_port}
+          }
+        ]
+      }
+]

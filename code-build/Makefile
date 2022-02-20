@@ -24,6 +24,11 @@ test: $(addsuffix .test, $(LIBS) $(APPS))
 clean:
 	rm -rf $(BUILD_DIR) $(addsuffix /target, $(APPS))
 
+image:
+	echo "Building the docker image...."
+	/usr/bin/make clean all
+	/usr/bin/docker-compose build
+
 $(APP_JARS): | $(BUILD_DIR)
 	cd $(notdir $(@:.jar=)) && lein uberjar && cp target/uberjar/*-standalone.jar ../$@
 

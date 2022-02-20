@@ -4,7 +4,7 @@ services:
     build:
       context: ./front-end
       dockerfile: ../static/Dockerfile
-    image: rohit04apr/tw-static:latest
+    image: {dockerhub-username}/tw-static:v2
     ports:
       - "8000:8000"
     restart: unless-stopped
@@ -13,7 +13,7 @@ services:
     build:
       context: ./build
       dockerfile: ../front-end/Dockerfile
-    image: rohit04apr/tw-frontend
+    image: {dockerhub-username}/tw-frontend:v2
     ports:
       - "80:8001"
     restart: unless-stopped
@@ -28,7 +28,7 @@ services:
     build:
       context: ./build
       dockerfile: ../quotes/Dockerfile
-    image: rohit04apr/tw-quotes
+    image: {dockerhub-username}/tw-quotes:v2
     ports:
       - "8002:8002"
     restart: unless-stopped
@@ -39,7 +39,7 @@ services:
     build:
       context: ./build
       dockerfile: ../newsfeed/Dockerfile
-    image: rohit04apr/tw-newsfeed
+    image: {dockerhub-username}/tw-newsfeed:v2
     ports:
       - "8003:8003"
     restart: unless-stopped

@@ -1,59 +1,68 @@
-# DevOps Assessment
+# terraform-app-deploy
 
-This project contains three services:
+## Architecture Diagram
 
-* `quotes` which serves a random quote from `quotes/resources/quotes.json`
-* `newsfeed` which aggregates several RSS feeds together
-* `front-end` which calls the two previous services and displays the results.
+![architecture-diagram](documentation/diagram.png)
 
-## Prerequisites
 
-* Java
-* [Leiningen](http://leiningen.org/) (can be installed using `brew install leiningen`)
+---
 
-## Running tests
 
-You can run the tests of all apps by using `make test`
+## Usage
 
-## Building
+It is used to host a Clojure application on AWS on a containerised platform. It will create following services
 
-First you need to ensure that the common libraries are installed: run `make libs` to install them to your local `~/.m2` repository. This will allow you to build the JARs.
+| This includes: |
+|------|
+| VPC |
+| Two each subnet (Public & Private) |
+| Internet Gateway |
+| NAT Gateway |
+| Launch configuration |
+| Autoscaling groups |
+| ECS - with tasks and services |
+| Application load balancer with target groups |
+| Secure security groups |
+||
+||
 
-To build all the JARs and generate the static tarball, run the `make clean all` command from this directory. The JARs and tarball will appear in the `build/` directory.
+<!-- markdownlint-disable -->
+## Requirements
 
-### Static assets
+| Name | Version |
+|------|---------|
+| terraform | >= 0.12.0 |
+| aws | >= 2.0 |
 
-`cd` to `front-end/public` and run `./serve.py` (you need Python3 installed). This will serve the assets on port 8000.
+## Inputs
 
-## Running
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| aws | Credentials for this AWS account. | `map(string)` | <pre> {access_key = "" <br> secret_key = "" <br> region = "eu-central-1"} </pre>  | yes |
+| vpc | IP CIDR details for VPC creation | `map(string)` | <pre>{ vpc_cidr         = "10.0.0.0/16", <br> subnet_private_1 = "10.0.1.0/24" <br> subnet_private_2 = "10.0.2.0/24" <br> subnet_public_1  = "10.0.3.0/24" <br> subnet_public_2  = "10.0.4.0/24" }</pre> | no |
+| container_details | Instance configuration details | `map(string)` | <pre>{frontend_image = "{dockerhub-username}/tw-frontend:v2" frontend_port  = "8001" static_image   = "{dockerhub-username}/tw-static:v2" static_port    = "8000" quotes_image   = "{dockerhub-username}/tw-quotes:v2" quotes_port    = "8002" newsfeed_image = "{dockerhub-username}/tw-newsfeed:v2" newsfeed_port  = "8003"}</pre> | yes |
+| custom_tags | Custom tags which can be passed on to the AWS resources. They should be key value pairs having distinct keys. | `map(string)` | <pre>CreatedBy   = "terraform" }</pre> | no |
+| cluster_name |The name of AWS ECS cluster. | `string` | `"tw-cluster"` | no |
+| instance |Instance configuration details. | `string` | <pre>{asg_min_size  = 2 asg_max_size  = 2 asg_desired_capacity = 2 ecs_task_count  = 2}</pre>  | no |
 
-All the apps take environment variables to configure them and expose the URL `/ping` which will just return a 200 response that you can use with e.g. a load balancer to check if the app is running.
 
-### Front-end app
+## Outputs
 
-`java -jar front-end.jar`
+| Name | Description |
+|------|-------------|
+| alb_endpoint | ALB endpoint to access web application |
 
-*Environment variables*:
 
-* `APP_PORT`: The port on which to run the app
-* `STATIC_URL`: The URL on which to find the static assets
-* `QUOTE_SERVICE_URL`: The URL on which to find the quote service
-* `NEWSFEED_SERVICE_URL`: The URL on which to find the newsfeed service
-* `NEWSFEED_SERVICE_TOKEN`: The authentication token that allows the app to talk to the newsfeed service. This should be treated as an application secret. The value should be: `T1&eWbYXNWG1w1^YGKDPxAWJ@^et^&kX`
+## Steps to build and deploy the application
+- run `cd code-build`
+- replace `{dockerhub-username}` to your docker hub user name in docker-compose.yaml file.
+- run `make image` -> This will build the code and create the image locally
+- push all the four images to the docker hub. like `docker push {dockerhub-username}/tw-frontend:v2`.
+- run `cd ..`
+- set the required variables for terraform mentioned in the Input section.
+- run `terraform init`
+- run `terraform plan`
+- run `terraform apply`
+- Once all resources are created successfully and ECS tasks started running. You can check the application using the ALB endpoint.
 
-### Quote service
-
-`java -jar quotes.jar`
-
-*Environment variables*
-
-* `APP_PORT`: The port on which to run the app
-
-### Newsfeed service
-
-`java -jar newsfeed.jar`
-
-*Environment variables*
-
-* `APP_PORT`: The port on which to run the app
-
+![output](documentation/output.png)
